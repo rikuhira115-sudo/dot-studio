@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#111318">
+  <meta name="description" content="ブラウザだけで使える無料のドット絵エディター DOT STUDIO">
+  <title>DOT STUDIO — Pixel Art Editor</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="./" aria-label="DOT STUDIO ホーム"><span class="brand-mark">▦</span><span>DOT<span class="brand-light"> STUDIO</span></span></a>
+    <div class="top-meta"><span class="status-dot"></span><span>LOCAL WORKSPACE</span></div>
+    <div class="top-actions">
+      <button class="btn btn-quiet" id="newBtn" title="新規キャンバス">新規</button>
+      <button class="btn btn-quiet" id="openBtn">画像を開く</button>
+      <button class="btn btn-primary" id="exportBtn">PNGを書き出す <span aria-hidden="true">↗</span></button>
+      <input id="fileInput" type="file" accept="image/png,image/jpeg,image/webp" hidden>
+    </div>
+  </header>
+
+  <main class="workspace">
+    <aside class="panel tools-panel">
+      <div class="panel-heading"><span>TOOLS</span><span class="muted tiny">01</span></div>
+      <div class="tool-grid" role="toolbar" aria-label="描画ツール">
+        <button class="tool active" data-tool="pen" title="ペン (B)"><span>✎</span><small>ペン</small></button>
+        <button class="tool" data-tool="eraser" title="消しゴム (E)"><span>▱</span><small>消しゴム</small></button>
+        <button class="tool" data-tool="fill" title="塗りつぶし (G)"><span>▨</span><small>塗りつぶし</small></button>
+        <button class="tool" data-tool="eyedropper" title="スポイト (I)"><span>⌖</span><small>スポイト</small></button>
+        <button class="tool" data-tool="line" title="直線"><span>／</span><small>直線</small></button>
+        <button class="tool" data-tool="rect" title="四角形"><span>□</span><small>四角形</small></button>
+      </div>
+      <div class="panel-separator"></div>
+      <div class="panel-heading"><span>COLOR</span></div>
+      <label class="color-current"><input id="colorInput" type="color" value="#e7a84b"><span><b id="colorHex">#E7A84B</b><small>前景色</small></span></label>
+      <div class="swatches" id="swatches" aria-label="色パレット"></div>
+      <button class="text-button" id="addColorBtn">＋ 現在の色を追加</button>
+      <div class="panel-separator"></div>
+      <div class="panel-heading"><span>VIEW</span></div>
+      <label class="check-row"><input type="checkbox" id="gridToggle" checked> <span>ピクセルグリッド</span></label>
+      <label class="check-row"><input type="checkbox" id="checkerToggle" checked> <span>透明背景を表示</span></label>
+      <div class="zoom-controls"><button id="zoomOut" aria-label="縮小">−</button><span id="zoomLabel">100%</span><button id="zoomIn" aria-label="拡大">＋</button></div>
+      <p class="side-note">すべての画像処理はこのブラウザ内で行われます。</p>
+    </aside>
+
+    <section class="editor-area">
+      <div class="editor-toolbar">
+        <div class="document-name"><span class="file-icon">▧</span><span id="docName">untitled.png</span><span class="unsaved" id="saveState">● 保存済み</span></div>
+        <div class="editor-actions">
+          <button class="icon-btn" id="undoBtn" title="元に戻す (Ctrl+Z)" disabled>↶</button>
+          <button class="icon-btn" id="redoBtn" title="やり直す (Ctrl+Y)" disabled>↷</button>
+          <span class="toolbar-divider"></span>
+          <button class="icon-btn" id="fitBtn" title="画面に合わせる">⤢</button>
+        </div>
+      </div>
+      <div class="canvas-stage" id="canvasStage">
+        <div class="canvas-wrap" id="canvasWrap">
+          <canvas id="pixelCanvas" width="32" height="32" aria-label="ドット絵キャンバス"></canvas>
+          <canvas id="overlayCanvas" width="32" height="32" aria-hidden="true"></canvas>
+        </div>
+        <div class="empty-hint" id="emptyHint"><span class="hint-icon">✦</span><b>MAKE SOMETHING TINY.</b><span>描くか、画像を読み込んでドット絵に変換しよう。</span><button class="btn btn-primary" id="hintOpenBtn">画像を読み込む</button></div>
+      </div>
+      <footer class="statusbar"><span><i class="status-dot"></i> Ready</span><span id="cursorInfo">X: — &nbsp; Y: —</span><span id="dimensionInfo">32 × 32 px</span></footer>
+    </section>
+
+    <aside class="panel properties-panel">
+      <div class="panel-heading"><span>CANVAS</span><span class="muted tiny">02</span></div>
+      <label class="field-label">キャンバスサイズ</label>
+      <div class="preset-grid">
+        <button class="preset" data-size="16">16 × 16</button>
+        <button class="preset active" data-size="32">32 × 32</button>
+        <button class="preset" data-size="64">64 × 64</button>
+        <button class="preset" data-size="128">128 × 128</button>
+      </div>
+      <div class="size-fields"><label><span>幅</span><input id="widthInput" type="number" min="1" max="512" value="32"></label><span>×</span><label><span>高さ</span><input id="heightInput" type="number" min="1" max="512" value="32"></label></div>
+      <button class="btn btn-secondary full-width" id="resizeBtn">サイズを適用</button>
+      <div class="panel-separator"></div>
+      <div class="panel-heading"><span>IMAGE TO PIXEL</span><span class="muted tiny">03</span></div>
+      <p class="section-description">画像を読み込み、ピクセル数と色数を調整。変換結果はそのまま編集できます。</p>
+      <button class="btn btn-secondary full-width" id="convertOpenBtn">画像を選択する <span>＋</span></button>
+      <div class="field-block"><div class="range-heading"><label for="pixelSize">ピクセルの細かさ</label><output id="pixelSizeValue">32 px</output></div><input id="pixelSize" type="range" min="8" max="128" step="8" value="32"><div class="range-ends"><span>粗い</span><span>細かい</span></div></div>
+      <div class="field-block"><div class="range-heading"><label for="colorCount">色数</label><output id="colorCountValue">16 色</output></div><input id="colorCount" type="range" min="4" max="64" step="4" value="16"><div class="range-ends"><span>少ない</span><span>多い</span></div></div>
+      <div class="field-block"><div class="range-heading"><label for="brightness">明るさ</label><output id="brightnessValue">0</output></div><input id="brightness" type="range" min="-50" max="50" value="0"></div>
+      <div class="field-block"><div class="range-heading"><label for="contrast">コントラスト</label><output id="contrastValue">0</output></div><input id="contrast" type="range" min="-50" max="50" value="0"></div>
+      <label class="check-row"><input type="checkbox" id="keepAlpha" checked> <span>透明部分を保持</span></label>
+      <button class="btn btn-primary full-width" id="convertBtn" disabled>ドット絵に変換</button>
+      <p class="tiny muted" id="imageStatus">画像を選択すると変換できます。</p>
+      <div class="panel-separator"></div>
+      <div class="panel-heading"><span>PROJECT</span></div>
+      <div class="project-actions"><button class="btn btn-quiet" id="saveProjectBtn">プロジェクト保存</button><button class="btn btn-quiet" id="loadProjectBtn">読み込み</button><input id="projectInput" type="file" accept="application/json,.json" hidden></div>
+      <p class="tiny muted">作業データはこの端末のブラウザに自動保存されます。</p>
+    </aside>
+  </main>
+  <script src="js/app.js"></script>
+</body>
+</html>

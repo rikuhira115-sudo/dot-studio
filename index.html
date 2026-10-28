@@ -8,12 +8,15 @@
   <title>DOT STUDIO — Pixel Art Editor</title>
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/responsive.css">
+  <link rel="stylesheet" href="css/mosaic.css">
 </head>
 <body>
   <header class="topbar">
     <a class="brand" href="./" aria-label="DOT STUDIO ホーム"><span class="brand-mark">▦</span><span>DOT<span class="brand-light"> STUDIO</span></span></a>
     <div class="top-meta"><span class="status-dot"></span><span>LOCAL WORKSPACE</span></div>
     <div class="top-actions">
+      <button class="btn mode-tab active" id="pixelModeBtn" aria-pressed="true">ドット絵</button>
+      <button class="btn mode-tab" id="mosaicModeBtn" aria-pressed="false">モザイクアート</button>
       <button class="btn btn-quiet" id="newBtn" title="新規キャンバス">新規</button>
       <button class="btn btn-quiet" id="openBtn">画像を開く</button>
       <button class="btn btn-primary" id="exportBtn">PNGを書き出す <span aria-hidden="true">↗</span></button>
@@ -21,7 +24,7 @@
     </div>
   </header>
 
-  <main class="workspace">
+  <main class="workspace" id="pixelWorkspace">
     <aside class="panel tools-panel">
       <div class="panel-heading"><span>TOOLS</span><span class="muted tiny">01</span></div>
       <div class="tool-grid" role="toolbar" aria-label="描画ツール">
@@ -93,6 +96,68 @@
       <p class="tiny muted">作業データはこの端末のブラウザに自動保存されます。</p>
     </aside>
   </main>
+  <section class="mosaic-workspace" id="mosaicWorkspace" hidden>
+    <aside class="mosaic-controls">
+      <h2>フォトモザイク</h2>
+      <p class="mosaic-lead">たくさんの写真を小さなタイルとして並べ、1枚の大きな画像を作ります。人物写真にもイラストにも使えます。</p>
+
+      <div class="mosaic-field">
+        <span class="mosaic-label">01 / 元になる画像</span>
+        <label class="mosaic-file" for="mosaicTargetInput"><span>▧</span><span>メイン画像を選択</span></label>
+        <input id="mosaicTargetInput" type="file" accept="image/png,image/jpeg,image/webp" hidden>
+        <span class="mosaic-file-info" id="mosaicTargetInfo">人物写真・イラストなどを選択してください。</span>
+      </div>
+
+      <div class="mosaic-field">
+        <span class="mosaic-label">02 / タイルに使う写真</span>
+        <label class="mosaic-file" for="mosaicTilesInput"><span>▦</span><span>写真を複数選択・追加</span></label>
+        <input id="mosaicTilesInput" type="file" accept="image/png,image/jpeg,image/webp" multiple hidden>
+        <span class="mosaic-file-info" id="mosaicTilesInfo">最初はできるだけ多くの画像（20枚以上がおすすめ）を選ぶと、自然な仕上がりになります。</span>
+      </div>
+
+      <div class="mosaic-field">
+        <div class="mosaic-range-head"><label for="mosaicDetail">タイルの細かさ</label><output id="mosaicDetailValue">60 マス</output></div>
+        <input type="range" id="mosaicDetail" min="20" max="120" step="5" value="60">
+        <div class="range-ends"><span>大きいタイル</span><span>細かいタイル</span></div>
+      </div>
+
+      <div class="mosaic-field">
+        <div class="mosaic-range-head"><label for="mosaicBlend">元画像を重ねる</label><output id="mosaicBlendValue">8%</output></div>
+        <input type="range" id="mosaicBlend" min="0" max="40" step="2" value="8">
+        <div class="mosaic-blend-line"><span>写真タイルを強調</span><span>顔や輪郭を見やすく</span></div>
+      </div>
+
+      <label class="mosaic-check"><input type="checkbox" id="mosaicNoRepeat" checked><span>同じ写真が近くで続くのを抑える</span></label>
+
+      <div class="mosaic-field">
+        <label for="mosaicResolution">PNG出力サイズ（長辺）</label>
+        <select class="mosaic-select" id="mosaicResolution">
+          <option value="1200">1200 px — 軽め</option>
+          <option value="2400" selected>2400 px — 高画質</option>
+          <option value="3600">3600 px — 大きめ</option>
+          <option value="4800">4800 px — 最大</option>
+        </select>
+      </div>
+      <div class="mosaic-actions">
+        <button class="btn btn-primary full-width" id="mosaicGenerateBtn" disabled>モザイクを生成</button>
+        <button class="btn btn-secondary full-width" id="mosaicExportBtn" disabled>高画質PNGを書き出す ↗</button>
+      </div>
+      <p class="mosaic-help">画像は端末内のブラウザだけで処理され、サーバーには送信されません。出力サイズが大きいとスマホでは時間がかかる場合があります。</p>
+    </aside>
+
+    <div class="mosaic-workarea">
+      <div class="mosaic-toolbar">
+        <div class="mosaic-toolbar-title">MOSAIC PREVIEW<small id="mosaicPreviewMeta">ここに生成結果が表示されます。</small></div>
+        <button class="btn btn-quiet" id="mosaicClearBtn" type="button">リセット</button>
+      </div>
+      <div class="mosaic-stage">
+        <div class="mosaic-empty" id="mosaicEmpty"><strong>TURN PHOTOS INTO ART.</strong>元画像とタイル写真を選択し、モザイクを生成してください。</div>
+        <canvas id="mosaicPreview" width="1200" height="800" aria-label="フォトモザイクのプレビュー" hidden></canvas>
+      </div>
+      <div class="mosaic-status" id="mosaicStatus" role="status">準備完了。まず元画像とタイルに使う写真を選択してください。</div>
+    </div>
+  </section>
   <script src="js/app.js"></script>
+  <script src="js/mosaic.js"></script>
 </body>
 </html>

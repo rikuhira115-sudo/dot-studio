@@ -27,7 +27,7 @@
 .mosaic-blend-line{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:10px;margin-top:5px}
 .mosaic-check{display:flex;gap:9px;align-items:flex-start;color:#c1c5cf;font-size:11px;line-height:1.6;margin:16px 0;cursor:pointer}
 .mosaic-check input{accent-color:var(--accent);margin:2px 0 0}
-.mosaic-select{width:100%;background:#12151b;border:1px solid var(--line);border-radius:6px;padding:10px;color:var(--text);font:12px inherit}
+.mosaic-select{width:100%;background:#12151b;border:1px solid var(--line);border-radius:6px;padding:10px;color:var(--text);font:inherit;font-size:12px}
 .mosaic-help{font-size:10px;color:#838b99;line-height:1.7;margin:12px 0 0}
 #mosaicGenerateBtn:disabled,#mosaicExportBtn:disabled{opacity:.4;cursor:not-allowed}
 .mosaic-actions{display:grid;grid-template-columns:1fr;gap:8px;margin-top:18px}
@@ -43,3 +43,5 @@
 }
 #mosaicWorkspace[hidden], #mosaicPreview[hidden], #mosaicEmpty[hidden] { display:none !important; }
 .mosaic-mode #newBtn, .mosaic-mode #openBtn, .mosaic-mode #exportBtn { display:none; }
+
+@media(max-width:760px){.topbar .top-actions{width:100%;margin-left:0;justify-content:flex-end;flex-wrap:wrap}.topbar .top-actions .mode-tab{flex:1}}

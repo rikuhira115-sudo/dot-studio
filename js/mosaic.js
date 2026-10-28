@@ -30,12 +30,58 @@
     }
     return n ? [r / n, g / n, b / n] : [128, 128, 128];
   }
+  function drawTargetThumb(img) {
+    const thumb = $("mosaicTargetThumb");
+    const c = thumb.getContext("2d");
+    thumb.width = 160; thumb.height = 120;
+    c.clearRect(0, 0, thumb.width, thumb.height);
+    const scale = Math.min(thumb.width / img.naturalWidth, thumb.height / img.naturalHeight);
+    const w = Math.max(1, Math.round(img.naturalWidth * scale));
+    const h = Math.max(1, Math.round(img.naturalHeight * scale));
+    c.imageSmoothingEnabled = true;
+    c.drawImage(img, Math.round((thumb.width - w) / 2), Math.round((thumb.height - h) / 2), w, h);
+  }
+  function renderTileGallery() {
+    const gallery = $("mosaicTilesGallery");
+    gallery.replaceChildren();
+    const shown = Math.min(state.tiles.length, 24);
+    for (let i = 0; i < shown; i++) {
+      const thumb = document.createElement("canvas");
+      thumb.width = thumb.height = 64;
+      thumb.className = "mosaic-tile-thumb";
+      thumb.title = state.tileNames[i] || ("写真 " + (i + 1));
+      thumb.setAttribute("role", "img");
+      thumb.setAttribute("aria-label", thumb.title);
+      const c = thumb.getContext("2d");
+      const img = state.tiles[i];
+      const scale = Math.max(64 / img.naturalWidth, 64 / img.naturalHeight);
+      const w = img.naturalWidth * scale, h = img.naturalHeight * scale;
+      c.imageSmoothingEnabled = true;
+      c.drawImage(img, (64 - w) / 2, (64 - h) / 2, w, h);
+      gallery.appendChild(thumb);
+    }
+    if (state.tiles.length > shown) {
+      const more = document.createElement("div");
+      more.className = "mosaic-tile-more";
+      more.textContent = "+" + (state.tiles.length - shown);
+      more.title = "ほか " + (state.tiles.length - shown) + " 枚";
+      gallery.appendChild(more);
+    }
+    $("mosaicTilesEmpty").hidden = state.tiles.length > 0;
+  }
   function updateInputs() {
     const canGenerate = !!state.target && state.tiles.length > 0 && !state.busy;
     $("mosaicGenerateBtn").disabled = !canGenerate;
     $("mosaicExportBtn").disabled = !state.previewReady || state.busy;
-    if (state.target) $("mosaicTargetInfo").textContent = state.targetName + " ・ " + state.target.naturalWidth + " × " + state.target.naturalHeight + " px";
-    if (state.tiles.length) $("mosaicTilesInfo").textContent = state.tiles.length + " 枚のタイル画像を読み込み済み";
+    $("mosaicTargetCard").classList.toggle("is-complete", !!state.target);
+    $("mosaicTilesCard").classList.toggle("is-complete", state.tiles.length > 0);
+    $("mosaicTilesCount").textContent = state.tiles.length + "枚";
+    $("mosaicTargetAction").textContent = state.target ? "別の画像を選ぶ" : "ここを押して画像を選ぶ";
+    $("mosaicTilesAction").textContent = state.tiles.length ? "写真を追加する" : "ここを押して写真を追加";
+    if (state.target) $("mosaicTargetInfo").textContent = state.target.naturalWidth + " × " + state.target.naturalHeight + " px";
+    $("mosaicTilesInfo").textContent = state.tiles.length
+      ? state.tiles.length + " 枚の写真が使われます。タップして追加できます。"
+      : "まだ写真は選ばれていません。";
   }
   function setStatus(s) { $("mosaicStatus").textContent = s; }
   function updateLabels() {
@@ -52,9 +98,13 @@
     try {
       const img = await loadImage(f);
       state.target = img; state.targetName = f.name; state.previewReady = false;
-      $("mosaicTargetInfo").textContent = f.name + " ・ " + img.naturalWidth + " × " + img.naturalHeight + " px";
-      $("mosaicEmpty").hidden = true;
-      setStatus("元画像を読み込みました。タイル画像を選んで生成してください。");
+      drawTargetThumb(img);
+      $("mosaicTargetName").textContent = f.name;
+      $("mosaicTargetPreview").hidden = false;
+      preview.hidden = true;
+      $("mosaicEmpty").hidden = false;
+      $("mosaicPreviewMeta").textContent = "ここに生成結果が表示されます。";
+      setStatus("①完成イメージを読み込みました。次に②モザイクに使う写真を追加してください。");
       updateInputs();
     } catch (err) { setStatus(err.message || "画像を読み込めませんでした。"); }
   });
@@ -71,11 +121,15 @@
     // Extend the existing tile library instead of replacing it, so users can add images in batches.
     state.tiles.push(...good.map(x => x.image));
     state.tileNames.push(...good.map(x => x.name));
-    $("mosaicTilesInfo").textContent = state.tiles.length + " 枚のタイル画像を読み込み済み";
-    if (good.length) setStatus(good.length + " 枚を追加しました。合計 " + state.tiles.length + " 枚です。");
+    state.previewReady = false;
+    preview.hidden = true;
+    $("mosaicEmpty").hidden = false;
+    $("mosaicPreviewMeta").textContent = "写真を追加したら、もう一度「モザイクを生成」を押してください。";
+    if (good.length) setStatus(good.length + " 枚を追加しました。写真は合計 " + state.tiles.length + " 枚。両方の画像を選んだら「モザイクを生成」を押してください。");
     else setStatus("読み込める画像がありませんでした。PNG/JPEG/WebPを選んでください。");
     // Cache averages once, not during generation.
     state.tileColors = (state.tileColors || []).concat(good.map(x => x.color));
+    renderTileGallery();
     updateInputs();
   });
 
@@ -201,10 +255,13 @@
     $("mosaicEmpty").hidden = false;
     $("mosaicTargetInput").value = "";
     $("mosaicTilesInput").value = "";
-    $("mosaicTargetInfo").textContent = "人物写真・イラストなどを選択してください。";
-    $("mosaicTilesInfo").textContent = "最初はできるだけ多くの画像（20枚以上がおすすめ）を選ぶと、自然な仕上がりになります。";
+    $("mosaicTargetPreview").hidden = true;
+    $("mosaicTargetThumb").getContext("2d").clearRect(0, 0, 160, 120);
+    $("mosaicTargetName").textContent = "画像を選択済み";
+    $("mosaicTilesGallery").replaceChildren();
+    $("mosaicTilesEmpty").hidden = false;
     $("mosaicPreviewMeta").textContent = "ここに生成結果が表示されます。";
-    setStatus("リセットしました。元画像とタイル写真を選び直してください。");
+    setStatus("リセットしました。①完成イメージ、②使う写真の順に選んでください。");
     updateInputs();
   });
   updateLabels(); updateInputs();

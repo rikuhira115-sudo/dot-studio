@@ -1,5 +1,5 @@
 /* Photo mosaic mode for DOT STUDIO */
-#mosaicWorkspace[hidden]{display:none!important}
+#pixelWorkspace[hidden], #mosaicWorkspace[hidden]{display:none!important}
 .mode-tab{white-space:nowrap}
 .mode-tab.active{background:#3a3022;border-color:#6d522d;color:var(--accent2)}
 .mosaic-workspace{display:grid;grid-template-columns:340px minmax(0,1fr);min-height:calc(100vh - 66px);background:var(--bg)}
@@ -41,7 +41,7 @@
  .mosaic-toolbar .btn{font-size:10px;padding:8px}
  .mosaic-controls h2{font-size:15px}
 }
-#mosaicWorkspace[hidden], #mosaicPreview[hidden], #mosaicEmpty[hidden] { display:none !important; }
+#pixelWorkspace[hidden], #mosaicWorkspace[hidden], #mosaicPreview[hidden], #mosaicEmpty[hidden] { display:none !important; }
 .mosaic-mode #newBtn, .mosaic-mode #openBtn, .mosaic-mode #exportBtn { display:none; }
 
 @media(max-width:760px){.topbar .top-actions{width:100%;margin-left:0;justify-content:flex-end;flex-wrap:wrap}.topbar .top-actions .mode-tab{flex:1}}
@@ -99,3 +99,30 @@
  #mosaicTargetThumb{flex-basis:92px;width:92px;height:70px}
 }
 @media(max-width:390px){.mosaic-howto{gap:5px}.mosaic-howto-step{flex-basis:22px;height:22px}.mosaic-howto b{font-size:8px}.mosaic-howto-arrow{font-size:13px}.mosaic-tile-gallery{grid-template-columns:repeat(5,minmax(0,1fr))}}
+
+/* The workspaces must never stack: the selected mode is the only visible main panel. */
+#pixelWorkspace[hidden],
+#mosaicWorkspace[hidden] {
+  display: none !important;
+}
+.topbar .mode-tab {
+  position: relative;
+  min-width: 88px;
+  border: 1px solid var(--line);
+  background: #20242d;
+  color: #c2c7d1;
+}
+.topbar .mode-tab.active {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #211a10;
+  box-shadow: 0 0 0 2px #e7a84b22;
+  font-weight: 800;
+}
+.topbar .mode-tab.active::before {
+  content: "●";
+  display: inline-block;
+  margin-right: 6px;
+  font-size: 8px;
+  vertical-align: 1px;
+}

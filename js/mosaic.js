@@ -175,5 +175,40 @@
     } catch (err) { setStatus("書き出しに失敗しました。出力サイズを小さくして再度お試しください。"); }
     finally { state.busy = false; updateInputs(); }
   });
+  function setMode(mode) {
+    const mosaic = mode === "mosaic";
+    $("pixelWorkspace").hidden = mosaic;
+    $("mosaicWorkspace").hidden = !mosaic;
+    document.body.classList.toggle("mosaic-mode", mosaic);
+    $("pixelModeBtn").classList.toggle("active", !mosaic);
+    $("mosaicModeBtn").classList.toggle("active", mosaic);
+    $("pixelModeBtn").setAttribute("aria-pressed", String(!mosaic));
+    $("mosaicModeBtn").setAttribute("aria-pressed", String(mosaic));
+    if (!mosaic) window.dispatchEvent(new Event("resize"));
+  }
+  $("pixelModeBtn").addEventListener("click", () => setMode("pixel"));
+  $("mosaicModeBtn").addEventListener("click", () => setMode("mosaic"));
+  $("mosaicClearBtn").addEventListener("click", () => {
+    state.target = null;
+    state.targetName = "";
+    state.tiles = [];
+    state.tileNames = [];
+    state.tileColors = [];
+    state.previewReady = false;
+    preview.width = 1200; preview.height = 800;
+    previewCtx.clearRect(0, 0, preview.width, preview.height);
+    preview.hidden = true;
+    $("mosaicEmpty").hidden = false;
+    $("mosaicTargetInput").value = "";
+    $("mosaicTilesInput").value = "";
+    $("mosaicTargetInfo").textContent = "人物写真・イラストなどを選択してください。";
+    $("mosaicTilesInfo").textContent = "最初はできるだけ多くの画像（20枚以上がおすすめ）を選ぶと、自然な仕上がりになります。";
+    $("mosaicPreviewMeta").textContent = "ここに生成結果が表示されます。";
+    setStatus("リセットしました。元画像とタイル写真を選び直してください。");
+    updateInputs();
+  });
+  // The preview canvas is only visible after successful generation.
+  const originalRunPreview = runPreview;
+  $("mosaicGenerateBtn").addEventListener("click", () => { preview.hidden = false; });
   updateLabels(); updateInputs();
 })();

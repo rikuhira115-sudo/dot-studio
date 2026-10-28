@@ -145,7 +145,7 @@
   }
   async function runPreview() {
     if (!state.target || !state.tiles.length || state.busy) return;
-    state.busy = true; updateInputs(); state.previewReady = false;
+    state.busy = true; updateInputs(); state.previewReady = false; preview.hidden = false;
     try {
       const cells = +$("mosaicDetail").value;
       const res = await drawMosaic(preview, state.target, 1200, cells, +$("mosaicBlend").value, $("mosaicNoRepeat").checked, true);
@@ -207,8 +207,5 @@
     setStatus("リセットしました。元画像とタイル写真を選び直してください。");
     updateInputs();
   });
-  // The preview canvas is only visible after successful generation.
-  const originalRunPreview = runPreview;
-  $("mosaicGenerateBtn").addEventListener("click", () => { preview.hidden = false; });
   updateLabels(); updateInputs();
 })();

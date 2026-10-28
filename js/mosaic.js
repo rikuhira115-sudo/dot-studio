@@ -145,7 +145,7 @@
   }
   async function runPreview() {
     if (!state.target || !state.tiles.length || state.busy) return;
-    state.busy = true; updateInputs(); state.previewReady = false; preview.hidden = false;
+    state.busy = true; updateInputs(); state.previewReady = false; preview.hidden = false; $("mosaicEmpty").hidden = true;
     try {
       const cells = +$("mosaicDetail").value;
       const res = await drawMosaic(preview, state.target, 1200, cells, +$("mosaicBlend").value, $("mosaicNoRepeat").checked, true);
@@ -153,7 +153,7 @@
       $("mosaicEmpty").hidden = true;
       $("mosaicPreviewMeta").textContent = res.cells + " マス ・ プレビュー " + res.width + " × " + res.height + " px";
       setStatus("生成完了。タイルの細かさや元画像の混ぜ具合を調整して再生成できます。");
-    } catch (err) { setStatus("生成に失敗しました。画像枚数やサイズを変えて再度お試しください。"); }
+    } catch (err) { preview.hidden = true; $("mosaicEmpty").hidden = false; setStatus("生成に失敗しました。画像枚数やサイズを変えて再度お試しください。"); }
     finally { state.busy = false; updateInputs(); }
   }
   $("mosaicGenerateBtn").addEventListener("click", runPreview);

@@ -2,7 +2,7 @@
 #mosaicWorkspace[hidden]{display:none!important}
 .mode-tab{white-space:nowrap}
 .mode-tab.active{background:#3a3022;border-color:#6d522d;color:var(--accent2)}
-.mosaic-workspace{display:grid;grid-template-columns:290px minmax(0,1fr);min-height:calc(100vh - 66px);background:var(--bg)}
+.mosaic-workspace{display:grid;grid-template-columns:340px minmax(0,1fr);min-height:calc(100vh - 66px);background:var(--bg)}
 .mosaic-controls{padding:22px 18px;background:var(--panel);border-right:1px solid var(--line);min-width:0}
 .mosaic-controls h2{font-size:16px;margin:0 0 7px;letter-spacing:.2px}
 .mosaic-lead{color:var(--muted);line-height:1.7;font-size:11px;margin:0 0 20px}
@@ -45,3 +45,57 @@
 .mosaic-mode #newBtn, .mosaic-mode #openBtn, .mosaic-mode #exportBtn { display:none; }
 
 @media(max-width:760px){.topbar .top-actions{width:100%;margin-left:0;justify-content:flex-end;flex-wrap:wrap}.topbar .top-actions .mode-tab{flex:1}}
+
+/* Clear, separate upload cards: target image vs. source tile photos */
+.mosaic-howto{display:flex;align-items:center;gap:8px;padding:12px 10px;margin:15px 0 16px;background:#222630;border:1px solid var(--line);border-radius:9px}
+.mosaic-howto>span:not(.mosaic-howto-step):not(.mosaic-howto-arrow){min-width:0}
+.mosaic-howto-step{display:grid;place-items:center;flex:0 0 25px;height:25px;border-radius:50%;background:var(--accent);color:#211a10;font-size:12px;font-weight:800}
+.mosaic-howto b,.mosaic-howto small{display:block;white-space:nowrap}
+.mosaic-howto b{font-size:10px;color:#e9ebef}
+.mosaic-howto small{font-size:9px;color:var(--muted);margin-top:4px}
+.mosaic-howto-arrow{color:var(--accent2);font-size:17px;padding:0 2px}
+.mosaic-step-card{border:1px solid #3a414d;background:#1e222b;border-radius:12px;padding:14px;margin:12px 0 16px;min-width:0}
+.mosaic-step-card.is-complete{border-color:#6f956e;box-shadow:inset 0 0 0 1px #6f956e22}
+.mosaic-step-heading{display:flex;align-items:flex-start;gap:10px;margin:0 0 12px}
+.mosaic-step-number{display:grid;place-items:center;flex:0 0 29px;height:29px;background:#3a3022;color:var(--accent2);border:1px solid #6d522d;border-radius:8px;font-size:13px;font-weight:800}
+.mosaic-step-heading h3{font-size:13px;color:#f1f2f5;margin:1px 0 5px}
+.mosaic-step-heading p{font-size:10px;line-height:1.65;color:#aab1be;margin:0}
+.mosaic-step-heading p b{color:#f1c879}
+.mosaic-dropzone{display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;min-height:112px;padding:14px 10px;border:1px dashed #77704f;border-radius:9px;background:#29291f;text-align:center;cursor:pointer;transition:background .15s,border-color .15s}
+.mosaic-dropzone:hover{background:#363225;border-color:var(--accent2)}
+.mosaic-dropzone-tiles{background:#202933;border-color:#657d93}
+.mosaic-dropzone-tiles:hover{background:#293846;border-color:#94b9d6}
+.mosaic-drop-icon{display:grid;place-items:center;width:29px;height:29px;border-radius:8px;background:#49402d;color:#f8d28a;font-size:22px;line-height:1}
+.mosaic-dropzone-tiles .mosaic-drop-icon{background:#344759;color:#b9ddfa;font-size:17px}
+.mosaic-drop-title{font-size:11px;font-weight:800;color:#f1f2f5}
+.mosaic-dropzone small{max-width:100%;font-size:9px;line-height:1.5;color:#a8aeb9}
+.mosaic-target-preview{display:flex;gap:10px;align-items:center;margin-top:10px;padding:8px;background:#15181e;border:1px solid var(--line);border-radius:8px;min-width:0}
+.mosaic-target-preview[hidden]{display:none!important}
+#mosaicTargetThumb{display:block;flex:0 0 98px;width:98px;height:74px;object-fit:contain;border-radius:5px;background-color:#101217;background-image:linear-gradient(45deg,#292d35 25%,transparent 25%),linear-gradient(-45deg,#292d35 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#292d35 75%),linear-gradient(-45deg,transparent 75%,#292d35 75%);background-size:12px 12px;background-position:0 0,0 6px,6px -6px,-6px 0}
+.mosaic-target-details{display:flex;flex-direction:column;gap:5px;min-width:0;overflow:hidden}
+#mosaicTargetName{color:#e5e8ed;font-size:10px;overflow-wrap:anywhere;line-height:1.4}
+.mosaic-change-link{align-self:flex-start;cursor:pointer;color:var(--accent2);font-size:10px;text-decoration:underline;text-underline-offset:3px}
+.mosaic-change-link:hover{color:#fff}
+.mosaic-card-tip{font-size:9px;color:#959dab;line-height:1.7;margin:11px 0 0}
+.mosaic-card-tip span{display:inline-block;color:#f1c879;background:#3a3022;border-radius:4px;padding:2px 5px;margin-right:4px;font-weight:700}
+.mosaic-tile-summary{display:flex;align-items:baseline;gap:5px;margin:12px 0 7px;color:#aab1be;font-size:10px}
+#mosaicTilesCount{font-size:17px;line-height:1;color:#c2e2ff}
+.mosaic-tile-empty{padding:13px 8px;text-align:center;border:1px dashed #414a57;border-radius:7px;color:#858e9d;font-size:10px;line-height:1.6}
+.mosaic-tile-gallery{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px}
+.mosaic-tile-gallery:empty{display:none}
+.mosaic-tile-thumb{display:block;width:100%;aspect-ratio:1;min-width:0;object-fit:cover;border-radius:5px;background:#13161c;border:1px solid #454c59}
+.mosaic-tile-more{display:grid;place-items:center;aspect-ratio:1;min-width:0;background:#303642;color:#e5e8ed;border-radius:5px;font-size:10px;font-weight:700}
+.mosaic-file-info{overflow-wrap:anywhere}
+@media(max-width:1050px) and (min-width:761px){.mosaic-workspace{grid-template-columns:310px minmax(0,1fr)}.mosaic-controls{padding:17px 13px}.mosaic-step-card{padding:11px}}
+@media(max-width:760px){
+ .mosaic-controls{padding:16px 12px 22px}
+ .mosaic-howto{gap:7px;padding:11px 8px}
+ .mosaic-howto b{font-size:9px}
+ .mosaic-howto small{font-size:8px;white-space:normal;line-height:1.4}
+ .mosaic-step-card{padding:13px;margin:12px 0}
+ .mosaic-step-heading h3{font-size:14px}
+ .mosaic-dropzone{min-height:112px}
+ .mosaic-tile-gallery{grid-template-columns:repeat(6,minmax(0,1fr))}
+ #mosaicTargetThumb{flex-basis:92px;width:92px;height:70px}
+}
+@media(max-width:390px){.mosaic-howto{gap:5px}.mosaic-howto-step{flex-basis:22px;height:22px}.mosaic-howto b{font-size:8px}.mosaic-howto-arrow{font-size:13px}.mosaic-tile-gallery{grid-template-columns:repeat(5,minmax(0,1fr))}}

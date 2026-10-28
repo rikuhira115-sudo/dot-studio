@@ -101,19 +101,47 @@
       <h2>フォトモザイク</h2>
       <p class="mosaic-lead">たくさんの写真を小さなタイルとして並べ、1枚の大きな画像を作ります。人物写真にもイラストにも使えます。</p>
 
-      <div class="mosaic-field">
-        <span class="mosaic-label">01 / 元になる画像</span>
-        <label class="mosaic-file" for="mosaicTargetInput"><span>▧</span><span>メイン画像を選択</span></label>
-        <input id="mosaicTargetInput" type="file" accept="image/png,image/jpeg,image/webp" hidden>
-        <span class="mosaic-file-info" id="mosaicTargetInfo">人物写真・イラストなどを選択してください。</span>
+      <div class="mosaic-howto">
+        <span class="mosaic-howto-step">1</span><span><b>完成イメージを選ぶ</b><small>モザイク全体で再現したい画像</small></span>
+        <span class="mosaic-howto-arrow">→</span>
+        <span class="mosaic-howto-step">2</span><span><b>使う写真を選ぶ</b><small>小さなタイルになる写真たち</small></span>
       </div>
 
-      <div class="mosaic-field">
-        <span class="mosaic-label">02 / タイルに使う写真</span>
-        <label class="mosaic-file" for="mosaicTilesInput"><span>▦</span><span>写真を複数選択・追加</span></label>
+      <section class="mosaic-step-card" id="mosaicTargetCard">
+        <div class="mosaic-step-heading">
+          <span class="mosaic-step-number">1</span>
+          <div><h3>完成イメージの画像</h3><p>モザイク全体で再現したい画像を <b>1枚</b> 選んでください。</p></div>
+        </div>
+        <label class="mosaic-dropzone" for="mosaicTargetInput" id="mosaicTargetDropzone">
+          <span class="mosaic-drop-icon">＋</span>
+          <span class="mosaic-drop-title" id="mosaicTargetAction">ここを押して画像を選ぶ</span>
+          <small>人物写真・イラストなど / PNG・JPG・WebP</small>
+        </label>
+        <input id="mosaicTargetInput" type="file" accept="image/png,image/jpeg,image/webp" hidden>
+        <div class="mosaic-target-preview" id="mosaicTargetPreview" hidden>
+          <canvas id="mosaicTargetThumb" width="160" height="120" aria-label="選択した完成イメージのプレビュー"></canvas>
+          <div class="mosaic-target-details"><b id="mosaicTargetName">画像を選択済み</b><span class="mosaic-file-info" id="mosaicTargetInfo">まだ画像は選ばれていません。</span><label for="mosaicTargetInput" class="mosaic-change-link">画像を変更する</label></div>
+        </div>
+        <div class="mosaic-card-tip"><span>おすすめ</span> 人物や形がはっきりした写真を選ぶと、完成形が伝わりやすくなります。</div>
+      </section>
+
+      <section class="mosaic-step-card" id="mosaicTilesCard">
+        <div class="mosaic-step-heading">
+          <span class="mosaic-step-number">2</span>
+          <div><h3>モザイクに使う写真</h3><p>小さなマスに並べる写真を <b>複数枚</b> 選んでください。</p></div>
+        </div>
+        <label class="mosaic-dropzone mosaic-dropzone-tiles" for="mosaicTilesInput" id="mosaicTilesDropzone">
+          <span class="mosaic-drop-icon">▦</span>
+          <span class="mosaic-drop-title" id="mosaicTilesAction">ここを押して写真を追加</span>
+          <small>一度に複数枚選択できます。後から追加もOK。</small>
+        </label>
         <input id="mosaicTilesInput" type="file" accept="image/png,image/jpeg,image/webp" multiple hidden>
-        <span class="mosaic-file-info" id="mosaicTilesInfo">最初はできるだけ多くの画像（20枚以上がおすすめ）を選ぶと、自然な仕上がりになります。</span>
-      </div>
+        <div class="mosaic-tile-summary"><b id="mosaicTilesCount">0枚</b><span>読み込み済み</span></div>
+        <div class="mosaic-tile-empty" id="mosaicTilesEmpty">選んだ写真はここに並びます。</div>
+        <div class="mosaic-tile-gallery" id="mosaicTilesGallery" aria-label="モザイクに使用する写真の一覧"></div>
+        <div class="mosaic-card-tip"><span>おすすめ</span> まずは20枚以上。違う色・明るさの写真が多いほど作りやすくなります。</div>
+        <span class="mosaic-file-info" id="mosaicTilesInfo">まだ写真は選ばれていません。</span>
+      </section>
 
       <div class="mosaic-field">
         <div class="mosaic-range-head"><label for="mosaicDetail">タイルの細かさ</label><output id="mosaicDetailValue">60 マス</output></div>

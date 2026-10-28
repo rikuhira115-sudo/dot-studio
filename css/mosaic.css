@@ -41,3 +41,5 @@
  .mosaic-toolbar .btn{font-size:10px;padding:8px}
  .mosaic-controls h2{font-size:15px}
 }
+#mosaicWorkspace[hidden], #mosaicPreview[hidden], #mosaicEmpty[hidden] { display:none !important; }
+.mosaic-mode #newBtn, .mosaic-mode #openBtn, .mosaic-mode #exportBtn { display:none; }
